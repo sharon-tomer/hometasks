@@ -1,7 +1,9 @@
 .App {
   width: 100vw;
   text-align: center;
-  background-color: #f2f2f2;
+  background-image: url(./images/background.webp);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
 }
 
 .App-header {
@@ -20,6 +22,4 @@
   flex-flow: row nowrap;
   justify-content: center;
   padding: 18px 0;
-  background-color: #f2f2f2;
-
 }

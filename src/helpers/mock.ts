@@ -2,8 +2,11 @@ import moment from "moment";
 import { assignee, complexity } from "../constants";
 import { TaskList } from "../types";
 
-export default function generateMockData() {
-  let mockData: any = new Object();
+let lastMS = 0;
+let suffix = 0;
+
+export function generateMockData() {
+  let mockData: any = {};
   for (let i = 0; i <= 20; i++) {
     const randomComplexity = Math.floor(Math.random() * 3);
     const randomAssignee = Math.floor(Math.random() * 3);
@@ -12,15 +15,27 @@ export default function generateMockData() {
     const nouns = ['report', 'presentation', 'client', 'supplies', 'doctor', 'team'];
   
     const title = `${verbs[Math.floor(Math.random() * verbs.length)]} ${nouns[Math.floor(Math.random() * nouns.length)]}`;
-    mockData[`task#${i}`] = {
+    const id = generateUniqueId('task');
+    mockData[id] = {
       title,
-      id: `task#${i}`,
-      body: `Complete additional details for ${title}`,
+      id,
+      content: `Complete additional details for ${title}`,
       complexity: Object.values(complexity)[randomComplexity],
       assignee: Object.values(assignee)[randomAssignee],
-      by: moment().add(randomDays, 'days'),
+      completeBy: moment().add(randomDays, 'days')
     };
   }
   
   return mockData as TaskList;
+}
+
+export function generateUniqueId(prefix = '') { // this is unique, not random.
+  const currentMS = Date.now();
+  if (currentMS === lastMS) {
+    suffix++;
+  } else {
+    suffix = 0;
+  }
+  lastMS = currentMS;
+  return `${prefix}-${currentMS}${suffix ? '-' + suffix : ''}`;
 }

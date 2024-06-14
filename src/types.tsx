@@ -6,20 +6,22 @@ export interface AppState {
     tasks: TaskList
 } 
 
-export interface ColumnProps {
-    id: string,
-    title: string,
-    taskIds: string[],
+export interface ColumnProps extends Column {
     tasks: TaskList
 }
 
+export interface Column {
+    id: string,
+    title: string,
+    taskIds: string[]
+}
+
 export interface ColumnsList {
-    [columnId: string]: ColumnProps
+    [columnId: string]: Column
 }
 
 export interface TaskProps {
     id: string,
-    index: number,
     title: string,
     content: string,
     complexity: complexity;
@@ -27,6 +29,11 @@ export interface TaskProps {
     completeBy?: Moment
 }
 
+export interface ColumnTask extends TaskProps {
+    index: number
+}
+
+export type TaskToCreate = Omit<TaskProps, "id">;
 export interface TaskList {
     [taskId: string]: TaskProps
 }
