@@ -3,7 +3,6 @@ import { ColumnsList, TaskList } from "./types";
 export enum Category {
   lessThan15Minutes = "<15",
   moreThan15Minutes = ">15",
-  unassigned = "unassigned",
   done = "done",
 }
 export enum Assignee {
@@ -11,6 +10,7 @@ export enum Assignee {
   nofar = "Nofar",
   both = "Both",
   either = "Either",
+  unassigned = "Unassigned",
 }
 
 export const userColors = {
@@ -18,6 +18,7 @@ export const userColors = {
   [Assignee.nofar]: "#beeeed",
   [Assignee.both]: "#44cfcb",
   [Assignee.either]: "#4ea5d9",
+  [Assignee.unassigned]: "#e7e7e7",
 };
 
 export const columnPositions = {

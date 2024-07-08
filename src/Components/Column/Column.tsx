@@ -45,7 +45,6 @@ const NoTasks = styled.div`
 `;
 
 function Column(props: ColumnProps, ref: React.LegacyRef<HTMLDivElement>) {
-  console.log(props);
   return (
     <Container>
       <Title>{props.title}</Title>

@@ -3,6 +3,8 @@ import { ColumnTask } from "../../types";
 import styled from "styled-components";
 import { Draggable } from "@hello-pangea/dnd";
 import { userColors, Assignee } from "../../constants";
+import moment from "moment";
+import { isInThePast } from "../../utils/helpers";
 
 const Card = styled.div<{ $isCompact: boolean; $backgroundColor: string }>`
   display: flex;
@@ -18,7 +20,7 @@ const Card = styled.div<{ $isCompact: boolean; $backgroundColor: string }>`
   border: none;
   border-radius: 5px;
   &:hover {
-    transform: scale(1.02);
+    filter: ${(props) => (props.$isCompact ? "brightness(0.9)" : "none")};
   }
 `;
 
@@ -29,6 +31,7 @@ const Header = styled.div`
   align-items: center;
   margin: 6px 0;
   padding: 0 12px;
+  height: 30px;
 `;
 
 const Content = styled.div<{ $isCompact: boolean }>`
@@ -83,10 +86,11 @@ function Task(task: ColumnTask, ref: React.LegacyRef<HTMLDivElement>) {
 
           <Content $isCompact={isCompact}>
             <Description>{task.content}</Description>
-            {task.completeBy ? (
-              <CompleteBy> {task.completeBy?.fromNow()} </CompleteBy>
-            ) : (
-              ""
+            {task.completeBy && (
+              <CompleteBy>
+                {isInThePast(task.completeBy) ? "Was due " : "Due "}
+                {moment().to(moment(task.completeBy))}
+              </CompleteBy>
             )}
           </Content>
         </Card>

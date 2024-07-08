@@ -1,18 +1,22 @@
 import { DragDropContext, DropResult } from "@hello-pangea/dnd";
 import Column from "../Column/Column";
-import { ColumnsList, TaskList } from "../../types";
+import { ColumnsList, TaskList, TaskProps, TaskToUpdate } from "../../types";
 import styled from "styled-components";
 import { Category } from "../../constants";
+import { useCallback, useEffect } from "react";
+import { orderTasks as unboundOrderTasks } from "../../utils/helpers";
 
 interface ColumnsWrapperProps {
   columns: ColumnsList;
   tasks: TaskList;
   setColumns: (columns: ColumnsList) => void;
+  updateTask: (taskToUpdate: TaskToUpdate) => void;
+  deleteTask: (taskId: string) => void;
 }
 
 const Container = styled.div`
   display: grid;
-  grid-template: 1fr 1fr / 1fr 1fr 1fr;
+  grid-template: 1fr / 1fr 1fr 1fr;
   grid-gap: 12px;
   padding: 12px;
   width: 90vw;
@@ -30,7 +34,34 @@ const ColumnWrapper = styled.div<{
   grid-row-end: ${(props) => props.$row + props.$size};
 `;
 
-function ColumnsWrapper({ columns, tasks, setColumns }: ColumnsWrapperProps) {
+function ColumnsWrapper({
+  columns,
+  tasks,
+  setColumns,
+  updateTask,
+  deleteTask,
+}: ColumnsWrapperProps) {
+  const orderTasks = useCallback(
+    (taskIds: string[]) => unboundOrderTasks(tasks, taskIds),
+    [tasks]
+  );
+
+  useEffect(() => {
+    const newColumns = Object.fromEntries(
+      Object.entries(columns).map(([columnId, column]) => {
+        return [
+          columnId,
+          {
+            ...column,
+            taskIds: orderTasks(column.taskIds),
+          },
+        ];
+      })
+    );
+
+    setColumns(newColumns);
+  }, [tasks]);
+
   const handleDragEnd = (result: DropResult) => {
     const { destination, source, draggableId } = result;
 
@@ -51,9 +82,12 @@ function ColumnsWrapper({ columns, tasks, setColumns }: ColumnsWrapperProps) {
       const newTasks = Array.from(column.taskIds);
       newTasks.splice(source.index, 1);
       newTasks.splice(destination.index, 0, draggableId);
+
+      const orderedNewTasks = orderTasks(newTasks);
+
       const newColumn = {
         ...column,
-        taskIds: newTasks,
+        taskIds: orderedNewTasks,
       };
       setColumns({
         ...columns,
@@ -63,29 +97,36 @@ function ColumnsWrapper({ columns, tasks, setColumns }: ColumnsWrapperProps) {
 
     // different column drop
     else {
-      const sourceColumn = columns[source.droppableId];
-      const destColumn = columns[destination.droppableId];
+      //   const sourceColumn = columns[source.droppableId];
+      //   const destColumn = columns[destination.droppableId];
 
-      const newSouceTasks = Array.from(sourceColumn.taskIds);
-      const newDestTasks = Array.from(destColumn.taskIds);
+      //   const newSouceTasks = Array.from(sourceColumn.taskIds);
+      //   const newDestTasks = Array.from(destColumn.taskIds);
 
-      newSouceTasks.splice(source.index, 1);
-      newDestTasks.splice(destination.index, 0, draggableId);
+      //   newSouceTasks.splice(source.index, 1);
+      //   newDestTasks.splice(destination.index, 0, draggableId);
 
-      const newSouceColumn = {
-        ...sourceColumn,
-        taskIds: newSouceTasks,
-      };
+      //   const orderedNewSourceTasks = orderTasks(newSouceTasks);
+      //   const orderedNewDestTasks = orderTasks(newDestTasks);
 
-      const newDestColumn = {
-        ...destColumn,
-        taskIds: newDestTasks,
-      };
+      //   const newSouceColumn = {
+      //     ...sourceColumn,
+      //     taskIds: orderedNewSourceTasks,
+      //   };
 
-      setColumns({
-        ...columns,
-        [newSouceColumn.id]: newSouceColumn,
-        [newDestColumn.id]: newDestColumn,
+      //   const newDestColumn = {
+      //     ...destColumn,
+      //     taskIds: orderedNewDestTasks,
+      //   };
+
+      //   setColumns({
+      //     ...columns,
+      //     [newSouceColumn.id]: newSouceColumn,
+      //     [newDestColumn.id]: newDestColumn,
+      //   });
+      updateTask({
+        id: draggableId,
+        category: destination.droppableId as Category,
       });
     }
   };
@@ -93,32 +134,15 @@ function ColumnsWrapper({ columns, tasks, setColumns }: ColumnsWrapperProps) {
   return (
     <Container>
       <DragDropContext onDragEnd={handleDragEnd}>
-        <ColumnWrapper $column={1} $row={1} $size={2}>
+        <ColumnWrapper $column={1} $row={1} $size={1}>
           <Column {...columns[Category.lessThan15Minutes]} tasks={tasks} />
         </ColumnWrapper>
-        <ColumnWrapper $column={2} $row={1} $size={2}>
+        <ColumnWrapper $column={2} $row={1} $size={1}>
           <Column {...columns[Category.moreThan15Minutes]} tasks={tasks} />
         </ColumnWrapper>{" "}
         <ColumnWrapper $column={3} $row={1} $size={1}>
-          <Column {...columns[Category.unassigned]} tasks={tasks} />
-        </ColumnWrapper>{" "}
-        <ColumnWrapper $column={3} $row={2} $size={1}>
           <Column {...columns[Category.done]} tasks={tasks} />
         </ColumnWrapper>
-        {/* {Object.values(columns).map((columnProps) => (
-          <ColumnWrapper
-            key={columnProps.id}
-            $row={columnProps.row}
-            $column={columnProps.column}
-          >
-            <Column
-              key={columnProps.id}
-              {...columnProps}
-              taskIds={columns[columnProps.id].taskIds}
-              tasks={tasks}
-            />
-          </ColumnWrapper>
-        ))} */}
       </DragDropContext>
     </Container>
   );

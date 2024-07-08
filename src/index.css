@@ -7,6 +7,20 @@
   --secondary-color-light: #beeeed;
   --secondary-color-dark: #155150;
 
+  --accent-color: #daff7d;
+  --info-color: #81559b;
+  --danger-color: #ff934f;
+
+  --user-color-1: #4ea5d9;
+  --user-color-2: #44cfcb;
+  --user-color-3: #daff7d;
+  --user-color-4: #81559b;
+  --user-color-5: #ff934f;
+
+  --task-unassigned-color: #e7e7e7;
+  --task-either-color: #bcddf1;
+  --task-done-color: #44cfcb;
+
   --background-color: #f3fcff;
 
   --text-color: #000000;

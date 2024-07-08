@@ -3,12 +3,12 @@ import { TaskToCreate } from "../../types";
 import { UseFormRegister } from "react-hook-form";
 
 interface CommonInputProps {
+  register: UseFormRegister<TaskToCreate>;
   lineNumber: number;
   placeholder?: string;
   displayName: ValidField;
-  register: UseFormRegister<TaskToCreate>;
   errorMessage?: string;
-  inputType: "input" | "select" | "textarea" | "checkbox";
+  inputType: "input" | "select" | "textarea" | "checkbox" | "date";
   children?: React.ReactNode;
 }
 
@@ -83,6 +83,8 @@ const Checkbox = styled.input<{ $lineNumber: number; $hasError: boolean }>`
   }
 `;
 
+const Date = styled.input<{ $lineNumber: number; $hasError: boolean }>``;
+
 const FormInput: React.FC<Props> = (props) => {
   const {
     inputType,
@@ -148,6 +150,19 @@ const FormInput: React.FC<Props> = (props) => {
       {props.inputType === "checkbox" && (
         <Checkbox
           type="checkbox"
+          $lineNumber={props.lineNumber}
+          $hasError={hasError}
+          id={props.displayName}
+          {...(otherProps as React.InputHTMLAttributes<HTMLInputElement>)}
+          {...props.register(props.displayName, {
+            required: props.required ? "this is required" : false,
+          })}
+        />
+      )}
+      {props.inputType === "date" && (
+        <Date
+          type="date"
+          aria-label="date"
           $lineNumber={props.lineNumber}
           $hasError={hasError}
           id={props.displayName}

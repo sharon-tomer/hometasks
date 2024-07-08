@@ -49,3 +49,5 @@ export interface ColumnTask extends TaskProps {
 }
 
 export type TaskToCreate = Omit<TaskProps, "id">;
+
+export type TaskToUpdate = Partial<TaskProps> & { id: string };

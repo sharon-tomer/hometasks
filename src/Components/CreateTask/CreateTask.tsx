@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import styled from "styled-components";
 import { Category, Assignee } from "../../constants";
 import FormInput from "../FormInput/FormInput";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface CreateTaskProps {
   onSubmit: (props: TaskToCreate) => void;
@@ -20,7 +20,9 @@ const Container = styled.div<{ $isExpended: boolean }>`
     props.$isExpended ? `calc(20vw + 12px)` : `calc(10vw + 12px)`};
   margin: 20px auto 10px auto;
   /* border: 1px solid #cccccc; */
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: var(--primary-color-light);
+  box-shadow: 0 0 12px 0 var(--primary-color-dark);
+  opacity: 0.85;
   padding: 12px;
   text-align: left;
   border-radius: 0 12px 12px 0;
@@ -29,13 +31,16 @@ const Container = styled.div<{ $isExpended: boolean }>`
 const Form = styled.form`
   display: grid;
   grid-template-columns: 1fr 3fr;
-  grid-template-rows: repeat(6, 1fr [col-start]);
+  grid-template-rows: repeat(7, 1fr [col-start]);
   padding: 12px;
   column-gap: 6px;
   row-gap: 12px;
+  align-items: flex-start;
+  & > * > input {
+    padding: 12px;
+  }
 `;
 const Title = styled.div`
-  padding: 12px;
   text-align: center;
   font-weight: bold;
   font-size: calc(6px + 2vmin);
@@ -46,7 +51,7 @@ const SubmitWrapper = styled.div`
   display: grid;
   grid-column-start: 1;
   grid-column-end: 3;
-  grid-row: 6;
+  grid-row: 7;
   padding: 0 30%;
 `;
 
@@ -58,120 +63,152 @@ const Submit = styled.input`
   font-weight: 600;
   border-radius: 4px;
   font-size: 13px;
-  background-color: #9147ff;
+  background-color: var(--secondary-color);
   color: white;
-  padding: 0 10px;
-  :hover {
-    background-color: #772ce8;
+  &:hover {
+    background-color: var(--secondary-color-dark);
   }
 `;
 
-const Plus = styled.div`
-  display: inline-block;
-  font-weight: 800;
+const CloseButton = styled.div`
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  cursor: pointer;
+  font-weight: 400;
+  &:hover {
+    font-weight: 800;
+    transform: scale(1.2);
+  }
 `;
 
-function CreateTask(
-  props: CreateTaskProps,
-  ref: React.LegacyRef<HTMLDivElement>
-) {
+function CreateTask(props: CreateTaskProps) {
   const {
     register,
     handleSubmit,
-    watch,
+    reset,
     formState: { errors },
+    setFocus,
   } = useForm<TaskToCreate>({
     defaultValues: {
       title: "",
       content: "",
       category: Category.lessThan15Minutes,
-      assignee: Assignee.both,
+      assignee: Assignee.unassigned,
       isUrgent: false,
     },
   });
 
   const [isExpended, setIsExpended] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (isExpended) {
+      setFocus("title");
+    }
+  }, [setFocus, isExpended]);
 
   const toggleExpend = () => {
-    if (isExpended) return;
     setIsExpended(!isExpended);
   };
 
+  const handleOnBlur = (event: React.FocusEvent<HTMLDivElement>) => {
+    setTimeout(() => {
+      if (isExpended && !ref.current?.contains(document.activeElement))
+        setIsExpended(false);
+    }, 0);
+  };
+
   const onSubmit = (data: TaskToCreate) => {
+    reset();
     setIsExpended(false);
     props.onSubmit(data);
   };
 
   return (
-    <Container $isExpended={isExpended} onClick={toggleExpend}>
-      <Title>
-        {!isExpended && <Plus>+</Plus>} Create {isExpended && "Task"}{" "}
-      </Title>
+    <Container
+      ref={ref}
+      $isExpended={isExpended}
+      onBlur={handleOnBlur}
+      tabIndex={-1}
+    >
+      {!isExpended && <Title onClick={toggleExpend}>+ Create</Title>}
       {isExpended && (
-        <Form onSubmit={handleSubmit(onSubmit)}>
-          <FormInput
-            inputType="input"
-            displayName="title"
-            placeholder="What needs to be done"
-            lineNumber={1}
-            required={true}
-            register={register}
-            errorMessage={errors.title?.message}
-          />
-          <FormInput
-            inputType="textarea"
-            displayName="content"
-            placeholder="The deets..."
-            lineNumber={2}
-            required={true}
-            register={register}
-            errorMessage={errors.content?.message}
-          />
-          <FormInput
-            inputType="select"
-            displayName="category"
-            lineNumber={3}
-            required={true}
-            register={register}
-            errorMessage={errors.category?.message}
-            defaultValue={Category.lessThan15Minutes}
-          >
-            <option value={Category.lessThan15Minutes}>
-              {Category.lessThan15Minutes} Minutes
-            </option>
-            <option value={Category.unassigned}>
-              {Category.unassigned} Minutes
-            </option>
-            <option value={Category.done}>{Category.done} Minutes</option>
-          </FormInput>
-          <FormInput
-            inputType="select"
-            displayName="assignee"
-            lineNumber={4}
-            required={true}
-            register={register}
-            errorMessage={errors.category?.message}
-            defaultValue={Assignee.either}
-          >
-            <option value={Assignee.tomer}>{Assignee.tomer}</option>
-            <option value={Assignee.nofar}>{Assignee.nofar}</option>
-            <option value={Assignee.both}>{Assignee.both}</option>
-            <option value={Assignee.either}>{Assignee.either}</option>
-            {/* different colors */}
-          </FormInput>
-          <FormInput
-            inputType="checkbox"
-            displayName="isUrgent"
-            register={register}
-            errorMessage={errors.isUrgent?.message}
-            lineNumber={5}
-          />
+        <>
+          <Title> Create Task</Title>
+          <CloseButton onClick={toggleExpend}> X </CloseButton>
+          <Form onSubmit={handleSubmit(onSubmit)}>
+            <FormInput
+              inputType="input"
+              displayName="title"
+              placeholder="What needs to be done"
+              lineNumber={1}
+              required={true}
+              register={register}
+              errorMessage={errors.title?.message}
+            />
+            <FormInput
+              inputType="textarea"
+              displayName="content"
+              placeholder="The deets..."
+              lineNumber={2}
+              required={true}
+              register={register}
+              errorMessage={errors.content?.message}
+            />
+            <FormInput
+              inputType="select"
+              displayName="category"
+              lineNumber={3}
+              required={true}
+              register={register}
+              errorMessage={errors.category?.message}
+            >
+              <option value={Category.lessThan15Minutes}>
+                {Category.lessThan15Minutes} Minutes
+              </option>
+              <option value={Category.moreThan15Minutes}>
+                {Category.moreThan15Minutes} Minutes
+              </option>
+              <option value={Category.done}>{Category.done}</option>
+            </FormInput>
+            <FormInput
+              inputType="select"
+              displayName="assignee"
+              lineNumber={4}
+              required={true}
+              register={register}
+              errorMessage={errors.category?.message}
+            >
+              <option value={Assignee.tomer}>{Assignee.tomer}</option>
+              <option value={Assignee.nofar}>{Assignee.nofar}</option>
+              <option value={Assignee.both}>{Assignee.both}</option>
+              <option value={Assignee.either}>{Assignee.either}</option>
+              <option value={Assignee.unassigned}>{Assignee.unassigned}</option>
 
-          {/* add isUrgent flag */}
-          <SubmitWrapper>
-            <Submit type="submit" />
-          </SubmitWrapper>
-        </Form>
+              {/* different colors */}
+            </FormInput>
+            <FormInput
+              inputType="date"
+              displayName="completeBy"
+              register={register}
+              errorMessage={errors.completeBy?.message}
+              lineNumber={5}
+            ></FormInput>
+            <FormInput
+              inputType="checkbox"
+              displayName="isUrgent"
+              register={register}
+              errorMessage={errors.isUrgent?.message}
+              lineNumber={6}
+            />
+
+            {/* add isUrgent flag */}
+            <SubmitWrapper>
+              <Submit type="submit" />
+            </SubmitWrapper>
+          </Form>
+        </>
       )}
     </Container>
   );
