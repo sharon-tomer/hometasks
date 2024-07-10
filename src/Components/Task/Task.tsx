@@ -5,13 +5,14 @@ import { Draggable } from "@hello-pangea/dnd";
 import { userColors, Assignee } from "../../constants";
 import moment from "moment";
 import { isInThePast } from "../../utils/helpers";
+import { ReactComponent as Bin } from "../../assets/bin.svg";
 
 const Card = styled.div<{ $isCompact: boolean; $backgroundColor: string }>`
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
-  height: ${(props) => (props.$isCompact ? "40px" : "auto")};
-  min-height: 60px;
+  /* height: ${(props) => (props.$isCompact ? "40px" : "auto")};
+  min-height: 60px; */
   border: 1px solid #cccccc;
   background-color: ${(props) => props.$backgroundColor};
   padding: 12px;
@@ -31,32 +32,46 @@ const Header = styled.div`
   align-items: center;
   margin: 6px 0;
   padding: 0 12px;
-  height: 30px;
 `;
 
 const Content = styled.div<{ $isCompact: boolean }>`
-  display: ${(props) => (props.$isCompact ? "none" : "block")};
+  display: ${(props) => (props.$isCompact ? "none" : "flex")};
+  flex-flow: column nowrap;
   padding: 0 12px;
   margin: 6px 0;
 `;
+
+const Footer = styled.div<{ $isCompact: boolean }>`
+  display: ${(props) => (props.$isCompact ? "none" : "flex")};
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  margin-top: 12px;
+  padding: 0 12px;
+`;
+
 const Title = styled.div`
   font-size: calc(6px + 2vmin);
-  color: #000000;
+  color: var(--text-color);
 `;
 
 const AssigneeWrapper = styled.div`
   font-size: calc(6px + 1vmin);
-  color: #000000;
+  color: var(--text-color);
 `;
 
 const Description = styled.div`
-  color: #000000;
+  color: var(--text-color);
 `;
 
 const CompleteBy = styled.div`
   padding-top: 6px;
   text-align: end;
-  color: gray;
+  color: var(--text-light-color);
+`;
+
+const BinWrapper = styled.div`
+  width: 18px;
+  height: 18px;
 `;
 
 function Task(task: ColumnTask, ref: React.LegacyRef<HTMLDivElement>) {
@@ -86,13 +101,18 @@ function Task(task: ColumnTask, ref: React.LegacyRef<HTMLDivElement>) {
 
           <Content $isCompact={isCompact}>
             <Description>{task.content}</Description>
+          </Content>
+          <Footer $isCompact={isCompact}>
+            <BinWrapper>
+              <Bin />
+            </BinWrapper>
             {task.completeBy && (
               <CompleteBy>
                 {isInThePast(task.completeBy) ? "Was due " : "Due "}
                 {moment().to(moment(task.completeBy))}
               </CompleteBy>
             )}
-          </Content>
+          </Footer>
         </Card>
       )}
     </Draggable>

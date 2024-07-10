@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { Category, Assignee } from "../../constants";
 import FormInput from "../FormInput/FormInput";
 import { useEffect, useRef, useState } from "react";
+import moment from "moment";
 
 interface CreateTaskProps {
   onSubmit: (props: TaskToCreate) => void;
@@ -26,15 +27,17 @@ const Container = styled.div<{ $isExpended: boolean }>`
   padding: 12px;
   text-align: left;
   border-radius: 0 12px 12px 0;
+  &:hover {
+    cursor: ${(props) => (props.$isExpended ? "default" : "pointer")};
+  }
 `;
 
 const Form = styled.form`
   display: grid;
   grid-template-columns: 1fr 3fr;
   grid-template-rows: repeat(7, 1fr [col-start]);
+  grid-gap: 12px;
   padding: 12px;
-  column-gap: 6px;
-  row-gap: 12px;
   align-items: flex-start;
   & > * > input {
     padding: 12px;
@@ -95,6 +98,7 @@ function CreateTask(props: CreateTaskProps) {
       content: "",
       category: Category.lessThan15Minutes,
       assignee: Assignee.unassigned,
+      completeBy: moment().add(7, "day").format("yyyy-MM-DD"),
       isUrgent: false,
     },
   });
@@ -114,8 +118,10 @@ function CreateTask(props: CreateTaskProps) {
 
   const handleOnBlur = (event: React.FocusEvent<HTMLDivElement>) => {
     setTimeout(() => {
-      if (isExpended && !ref.current?.contains(document.activeElement))
+      if (isExpended && !ref.current?.contains(document.activeElement)) {
         setIsExpended(false);
+        reset();
+      }
     }, 0);
   };
 
@@ -140,7 +146,8 @@ function CreateTask(props: CreateTaskProps) {
           <Form onSubmit={handleSubmit(onSubmit)}>
             <FormInput
               inputType="input"
-              displayName="title"
+              field="title"
+              displayName="Title"
               placeholder="What needs to be done"
               lineNumber={1}
               required={true}
@@ -149,7 +156,8 @@ function CreateTask(props: CreateTaskProps) {
             />
             <FormInput
               inputType="textarea"
-              displayName="content"
+              field="content"
+              displayName="Content"
               placeholder="The deets..."
               lineNumber={2}
               required={true}
@@ -158,7 +166,8 @@ function CreateTask(props: CreateTaskProps) {
             />
             <FormInput
               inputType="select"
-              displayName="category"
+              field="category"
+              displayName="Category"
               lineNumber={3}
               required={true}
               register={register}
@@ -174,7 +183,8 @@ function CreateTask(props: CreateTaskProps) {
             </FormInput>
             <FormInput
               inputType="select"
-              displayName="assignee"
+              field="assignee"
+              displayName="Assignee"
               lineNumber={4}
               required={true}
               register={register}
@@ -190,14 +200,16 @@ function CreateTask(props: CreateTaskProps) {
             </FormInput>
             <FormInput
               inputType="date"
-              displayName="completeBy"
+              field="completeBy"
+              displayName="Complete By"
               register={register}
               errorMessage={errors.completeBy?.message}
               lineNumber={5}
             ></FormInput>
             <FormInput
               inputType="checkbox"
-              displayName="isUrgent"
+              field="isUrgent"
+              displayName="Is Urgent?"
               register={register}
               errorMessage={errors.isUrgent?.message}
               lineNumber={6}

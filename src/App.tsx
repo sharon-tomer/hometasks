@@ -1,18 +1,8 @@
-import { generateUniqueId } from "./utils/mock";
-import { useCallback, useEffect, useRef, useState } from "react";
 import CreateTask from "./Components/CreateTask/CreateTask";
 import { default as ColumnArea } from "./Components/ColumnsWrapper/ColumnsWrapper";
-import {
-  ColumnsList,
-  TaskList,
-  TaskProps,
-  TaskToCreate,
-  TaskToUpdate,
-} from "./types";
+import { TaskList, TaskToCreate, TaskToUpdate } from "./types";
 import { JSONBinFetchConfig } from "./configs";
 import useFetch from "./Hooks/useFetch";
-import { emptyColumns, emptyTasks } from "./constants";
-import styled from "styled-components";
 import {
   Background,
   ColumnsWrapper,
@@ -20,6 +10,8 @@ import {
   Grid,
   Title,
 } from "./Styles/AppStyles";
+import { createTask, deleteTask, updateTask } from "./utils/TaskHandler";
+import useAPIData from "./Hooks/useAPIData";
 
 interface ApiResponse {
   record: {
@@ -30,89 +22,35 @@ interface ApiResponse {
 
 function App() {
   const { isLoading, apiData } = useFetch<ApiResponse>(JSONBinFetchConfig.get);
-  const [columns, setColumns] = useState<ColumnsList>(emptyColumns);
-  const [tasks, setTasks] = useState<TaskList>(emptyTasks);
-  const processedData = useRef(false);
-
-  const processApiData = useCallback(() => {
-    if (apiData?.record?.tasks && !processedData.current) {
-      const tasksFromServer = apiData.record.tasks;
-      setTasks(tasksFromServer as TaskList);
-
-      let initialColumns = JSON.parse(JSON.stringify(emptyColumns));
-
-      Object.values(tasksFromServer as TaskList).forEach((task) => {
-        if (initialColumns[task.category]) {
-          initialColumns[task.category].taskIds.push(task.id);
-        }
-      });
-
-      setColumns(initialColumns);
-      processedData.current = true;
-    }
-  }, [apiData]);
-
-  useEffect(() => {
-    processApiData();
-  }, [processApiData]);
+  const { columns, setColumns, tasks, setTasks } = useAPIData({ apiData });
 
   function handleNewTask(newTask: TaskToCreate) {
-    const id = generateUniqueId("task");
-    const task = { ...newTask, id };
-    setTasks({
-      [id]: {
-        ...task,
-        id,
-      },
-      ...tasks,
-    });
-    setColumns({
-      ...columns,
-      [task.category]: {
-        ...columns[task.category],
-        taskIds: [...columns[task.category].taskIds, id],
-      },
-    });
+    const { modifiedTasks, modifiedColumns } = createTask(
+      newTask,
+      tasks,
+      columns
+    );
+    setTasks(modifiedTasks);
+    setColumns(modifiedColumns);
   }
 
-  function updateTask(modifiedFields: TaskToUpdate) {
-    if (!tasks[modifiedFields.id]) {
+  function handleUpdateTask(modifiedFields: TaskToUpdate) {
+    if (!modifiedFields.id || !tasks[modifiedFields.id]) {
       return;
     }
-    const currentTask = tasks[modifiedFields.id];
-
-    const modifiedTask = {
-      ...currentTask,
-      ...modifiedFields,
-    };
+    const modifiedTask = updateTask(modifiedFields, tasks);
 
     setTasks({
       ...tasks,
-      [modifiedFields.id]: modifiedTask,
+      modifiedTask,
     });
-    if (currentTask.category !== modifiedFields.category) {
-      setColumns({
-        ...columns,
-        [currentTask.category]: {
-          ...columns[currentTask.category],
-          taskIds: columns[currentTask.category].taskIds.filter(
-            (id) => id !== modifiedFields.id
-          ),
-        },
-        [modifiedTask.category]: {
-          ...columns[modifiedTask.category],
-          taskIds: [
-            ...columns[modifiedTask.category].taskIds,
-            modifiedFields.id,
-          ],
-        },
-      });
-    }
   }
 
-  function deleteTask(taskId: string) {
-    let modifiedTasks = { ...tasks };
-    delete modifiedTasks[taskId];
+  function handleDeleteTask(taskId: string) {
+    if (!taskId || !tasks[taskId]) {
+      return;
+    }
+    let modifiedTasks = deleteTask(taskId, tasks);
     setTasks(modifiedTasks);
   }
 
@@ -129,8 +67,8 @@ function App() {
             columns={columns}
             tasks={tasks}
             setColumns={setColumns}
-            updateTask={updateTask}
-            deleteTask={deleteTask}
+            updateTask={handleUpdateTask}
+            deleteTask={handleDeleteTask}
           />
         </ColumnsWrapper>
       </Grid>

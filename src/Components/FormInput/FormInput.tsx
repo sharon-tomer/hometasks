@@ -3,10 +3,11 @@ import { TaskToCreate } from "../../types";
 import { UseFormRegister } from "react-hook-form";
 
 interface CommonInputProps {
+  field: ValidField;
   register: UseFormRegister<TaskToCreate>;
   lineNumber: number;
   placeholder?: string;
-  displayName: ValidField;
+  displayName: string;
   errorMessage?: string;
   inputType: "input" | "select" | "textarea" | "checkbox" | "date";
   children?: React.ReactNode;
@@ -87,6 +88,7 @@ const Date = styled.input<{ $lineNumber: number; $hasError: boolean }>``;
 
 const FormInput: React.FC<Props> = (props) => {
   const {
+    field,
     inputType,
     displayName,
     register,
@@ -104,7 +106,7 @@ const FormInput: React.FC<Props> = (props) => {
       <Label
         $lineNumber={props.lineNumber}
         $hasError={hasError}
-        htmlFor={props.displayName}
+        htmlFor={props.field}
       >
         {props.displayName}
       </Label>
@@ -113,10 +115,10 @@ const FormInput: React.FC<Props> = (props) => {
           placeholder={props.placeholder || ""}
           $lineNumber={props.lineNumber}
           $hasError={hasError}
-          id={props.displayName}
+          id={props.field}
           autoFocus
           {...(otherProps as React.InputHTMLAttributes<HTMLInputElement>)}
-          {...props.register(props.displayName, {
+          {...props.register(props.field, {
             required: props.required ? "this is required" : false,
           })}
         />
@@ -125,9 +127,9 @@ const FormInput: React.FC<Props> = (props) => {
         <Select
           $lineNumber={props.lineNumber}
           $hasError={hasError}
-          id={props.displayName}
+          id={props.field}
           {...(otherProps as React.SelectHTMLAttributes<HTMLSelectElement>)}
-          {...props.register(props.displayName, {
+          {...props.register(props.field, {
             required: props.required ? "this is required" : false,
           })}
         >
@@ -139,10 +141,10 @@ const FormInput: React.FC<Props> = (props) => {
           placeholder={props.placeholder || ""}
           $lineNumber={props.lineNumber}
           $hasError={hasError}
-          id={props.displayName}
+          id={props.field}
           autoFocus
           {...(otherProps as React.TextareaHTMLAttributes<HTMLTextAreaElement>)}
-          {...props.register(props.displayName, {
+          {...props.register(props.field, {
             required: props.required ? "this is required" : false,
           })}
         />
@@ -152,9 +154,9 @@ const FormInput: React.FC<Props> = (props) => {
           type="checkbox"
           $lineNumber={props.lineNumber}
           $hasError={hasError}
-          id={props.displayName}
+          id={props.field}
           {...(otherProps as React.InputHTMLAttributes<HTMLInputElement>)}
-          {...props.register(props.displayName, {
+          {...props.register(props.field, {
             required: props.required ? "this is required" : false,
           })}
         />
@@ -165,9 +167,9 @@ const FormInput: React.FC<Props> = (props) => {
           aria-label="date"
           $lineNumber={props.lineNumber}
           $hasError={hasError}
-          id={props.displayName}
+          id={props.field}
           {...(otherProps as React.InputHTMLAttributes<HTMLInputElement>)}
-          {...props.register(props.displayName, {
+          {...props.register(props.field, {
             required: props.required ? "this is required" : false,
           })}
         />
