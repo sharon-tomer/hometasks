@@ -195,8 +195,6 @@ function CreateTask(props: CreateTaskProps) {
               <option value={Assignee.both}>{Assignee.both}</option>
               <option value={Assignee.either}>{Assignee.either}</option>
               <option value={Assignee.unassigned}>{Assignee.unassigned}</option>
-
-              {/* different colors */}
             </FormInput>
             <FormInput
               inputType="date"
