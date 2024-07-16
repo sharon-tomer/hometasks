@@ -1,6 +1,7 @@
 import { Moment } from "moment";
 import { Assignee, Category } from "./constants";
 import { Dispatch } from "react";
+import { UseFormRegister } from "react-hook-form";
 
 export interface AppState {
   columns: ColumnsList;
@@ -92,3 +93,36 @@ export type UnknownAction = {
 export type TaskAction = KnownTaskAction | UnknownAction;
 
 export type DispatchType = Dispatch<TaskAction>;
+
+export interface CommonInputProps {
+  field: ValidCreationFormField;
+  register: UseFormRegister<TaskToCreate>;
+  lineNumber: number;
+  placeholder?: string;
+  displayName: string;
+  errorMessage?: string;
+  inputType: "input" | "select" | "textarea" | "checkbox" | "date";
+  children?: React.ReactNode;
+}
+
+export interface InputProps
+  extends CommonInputProps,
+    React.InputHTMLAttributes<HTMLInputElement> {}
+
+export interface SelectProps
+  extends CommonInputProps,
+    React.SelectHTMLAttributes<HTMLSelectElement> {}
+
+export interface TextAreaProps
+  extends CommonInputProps,
+    React.TextareaHTMLAttributes<HTMLTextAreaElement> {}
+
+export type FormInputProps = InputProps | SelectProps | TextAreaProps;
+
+export type ValidCreationFormField =
+  | "title"
+  | "content"
+  | "category"
+  | "assignee"
+  | "completeBy"
+  | "isUrgent";

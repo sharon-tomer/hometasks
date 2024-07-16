@@ -5,7 +5,7 @@ const Container = styled.div`
   grid-template: 1fr / 1fr 1fr 1fr;
   grid-gap: 12px;
   padding: 12px;
-  width: 90vw;
+  /* width: 90vw; */
   margin: 0 auto;
   min-height: 50vh;
 `;

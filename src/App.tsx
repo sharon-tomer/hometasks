@@ -12,7 +12,6 @@ import {
 } from "./Styles/AppStyles";
 
 import { useContext, useEffect } from "react";
-import { AppProvider } from "./Providers/AppProvider";
 import { AppDispatchContext } from "./Contexts/AppContext";
 import { actions } from "./Actions/TaskActions";
 
@@ -25,12 +24,9 @@ interface ApiResponse {
 
 function App() {
   const dispatch = useContext(AppDispatchContext);
-  const { isLoading, apiData } = useFetch<ApiResponse>(JSONBinFetchConfig.get);
-  //   const {
-  //     state,
-  //     dispatch,
-  //     actions: { handleBulkAddTasks },
-  //   } = useTaskActions();
+  const { /*isLoading,*/ apiData } = useFetch<ApiResponse>(
+    JSONBinFetchConfig.get
+  );
 
   useEffect(() => {
     apiData?.record?.tasks &&

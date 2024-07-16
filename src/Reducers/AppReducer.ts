@@ -1,4 +1,4 @@
-import { Category } from "../constants";
+import { Category, emptyColumns } from "../constants";
 import {
   AppState,
   TaskAction,
@@ -9,8 +9,6 @@ import {
 import { generateUniqueId } from "../utils/helpers";
 
 export default function appReducer(state: AppState, action: TaskAction) {
-  console.log("got action", action);
-  console.log("state before", state);
   if (isKnownAction(action)) {
     switch (action.type) {
       case "added": {
@@ -51,10 +49,20 @@ export default function appReducer(state: AppState, action: TaskAction) {
       }
       case "deleted": {
         const modifiedTasks = { ...state.tasks };
+        const modifiedColumns = {
+          ...state.columns,
+          [state.tasks[action.id].category]: {
+            ...state.columns[state.tasks[action.id].category],
+            taskIds: state.columns[
+              state.tasks[action.id].category
+            ].taskIds.filter((id) => id !== action.id),
+          },
+        };
         delete modifiedTasks[action.id];
+
         return {
           tasks: modifiedTasks,
-          columns: state.columns,
+          columns: modifiedColumns,
         };
       }
       case "moved": {
@@ -79,7 +87,6 @@ export default function appReducer(state: AppState, action: TaskAction) {
         };
       }
       case "bulk_added": {
-        console.log("got bulk action", action);
         const modifiedTasks = { ...state.tasks, ...action.tasksToAdd };
         const modifiedColumns = sortTasksToColumns(
           modifiedTasks,
@@ -107,7 +114,7 @@ function sortTasksToColumns(
   tasks: TaskList,
   columns: ColumnsList
 ): ColumnsList {
-  let initialColumns = JSON.parse(JSON.stringify(columns));
+  let initialColumns = JSON.parse(JSON.stringify(emptyColumns));
 
   Object.values(tasks).forEach((task) => {
     if (initialColumns[task.category]) {

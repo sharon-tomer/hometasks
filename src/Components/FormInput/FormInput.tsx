@@ -1,92 +1,7 @@
-import styled from "styled-components";
-import { TaskToCreate } from "../../types";
-import { UseFormRegister } from "react-hook-form";
+import { FormInputProps } from "../../types";
+import { Label, Input, Select, TextArea, Checkbox, DatePicker } from "./styles";
 
-interface CommonInputProps {
-  field: ValidField;
-  register: UseFormRegister<TaskToCreate>;
-  lineNumber: number;
-  placeholder?: string;
-  displayName: string;
-  errorMessage?: string;
-  inputType: "input" | "select" | "textarea" | "checkbox" | "date";
-  children?: React.ReactNode;
-}
-
-interface InputProps
-  extends CommonInputProps,
-    React.InputHTMLAttributes<HTMLInputElement> {}
-
-interface SelectProps
-  extends CommonInputProps,
-    React.SelectHTMLAttributes<HTMLSelectElement> {}
-
-interface TextAreaProps
-  extends CommonInputProps,
-    React.TextareaHTMLAttributes<HTMLTextAreaElement> {}
-
-type Props = InputProps | SelectProps | TextAreaProps;
-
-type ValidField =
-  | "title"
-  | "content"
-  | "category"
-  | "assignee"
-  | "completeBy"
-  | "isUrgent";
-
-const Label = styled.label<{ $lineNumber: number; $hasError: boolean }>`
-  font-size: calc(6px + 1vmin);
-  font-weight: 500;
-  grid-column: 1;
-  grid-row: ${(props) => props.$lineNumber};
-  &::first-letter {
-    text-transform: capitalize;
-  }
-`;
-
-const Input = styled.input<{ $lineNumber: number; $hasError: boolean }>`
-  grid-column: 2;
-  grid-row: ${(props) => props.$lineNumber};
-  padding: 3px 6px;
-  border-width: ${(props) => (props.$hasError ? "thin" : "0px")};
-  border-color: ${(props) => (props.$hasError ? "red" : "black")};
-`;
-
-const TextArea = styled.textarea<{ $lineNumber: number; $hasError: boolean }>`
-  grid-column: 2;
-  grid-row: ${(props) => props.$lineNumber};
-  padding: 3px 6px;
-  border-width: ${(props) => (props.$hasError ? "thin" : "0px")};
-  border-color: ${(props) => (props.$hasError ? "red" : "black")};
-  resize: none;
-`;
-
-const Select = styled.select<{ $lineNumber: number; $hasError: boolean }>`
-  grid-column: 2;
-  grid-row: ${(props) => props.$lineNumber};
-  justify-self: left;
-  padding: 0 6px;
-  border-width: ${(props) => (props.$hasError ? "thin" : "0px")};
-  border-color: ${(props) => (props.$hasError ? "red" : "black")};
-`;
-
-const Checkbox = styled.input<{ $lineNumber: number; $hasError: boolean }>`
-  grid-column: 2;
-  grid-row: ${(props) => props.$lineNumber};
-  justify-self: left;
-  border-width: thin;
-  border-color: var(--primary-color);
-  height: 18px;
-  width: 18px;
-  &:checked {
-    accent-color: var(--secondary-color);
-  }
-`;
-
-const Date = styled.input<{ $lineNumber: number; $hasError: boolean }>``;
-
-const FormInput: React.FC<Props> = (props) => {
+const FormInput: React.FC<FormInputProps> = (props) => {
   const {
     field,
     inputType,
@@ -162,7 +77,7 @@ const FormInput: React.FC<Props> = (props) => {
         />
       )}
       {props.inputType === "date" && (
-        <Date
+        <DatePicker
           type="date"
           aria-label="date"
           $lineNumber={props.lineNumber}
