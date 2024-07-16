@@ -55,11 +55,6 @@ export const emptyColumns: ColumnsList = {
     title: "> 15 Minutes",
     taskIds: [],
   },
-  unassigned: {
-    id: "unassigned",
-    title: "Unassigned",
-    taskIds: [],
-  },
   done: {
     id: "done",
     title: "Done",

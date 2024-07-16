@@ -12,13 +12,19 @@ function ColumnsWrapper() {
 
   const handleDragEnd = (result: DropResult) => {
     const { destination, source, draggableId } = result;
+    if (!destination) return;
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    )
+      return;
     dispatch(
       actions.moveTask(
         draggableId,
         source.droppableId as Category,
-        (destination || source).droppableId as Category,
+        destination.droppableId as Category,
         source.index,
-        (destination || source).index
+        destination.index
       )
     );
   };

@@ -81,6 +81,7 @@ export default function appReducer(state: AppState, action: TaskAction) {
             category: action.toCategory,
           },
         };
+
         return {
           tasks: modifiedTasks,
           columns: modifiedColumns,
@@ -133,7 +134,7 @@ function moveTaskToColumnAndPosition(
   fromIndex: number,
   toIndex: number
 ): ColumnsList {
-  let modifiedColumns = JSON.parse(JSON.stringify(columns));
+  //   let modifiedColumns = JSON.parse(JSON.stringify(columns));
 
   // same column drop
   if (fromCategory === toCategory) {
@@ -142,11 +143,14 @@ function moveTaskToColumnAndPosition(
     newTaskIds.splice(fromIndex, 1);
     newTaskIds.splice(toIndex, 0, taskId);
 
+    const newColumn = {
+      ...column,
+      taskIds: newTaskIds,
+    };
+
     return {
-      columns: {
-        ...modifiedColumns,
-        taskIds: newTaskIds,
-      },
+      ...columns,
+      [fromCategory]: newColumn,
     };
   }
 
