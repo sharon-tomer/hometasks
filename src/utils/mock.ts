@@ -1,9 +1,7 @@
 import moment from "moment";
 import { Assignee, Category } from "../constants";
 import { TaskList } from "../types";
-
-let lastMS = 0;
-let suffix = 0;
+import { generateUniqueId } from "./helpers";
 
 export function generateMockData() {
   let mockData: any = {};
@@ -36,16 +34,4 @@ export function generateMockData() {
   }
 
   return mockData as TaskList;
-}
-
-export function generateUniqueId(prefix = "") {
-  // this is unique, not random.
-  const currentMS = Date.now();
-  if (currentMS === lastMS) {
-    suffix++;
-  } else {
-    suffix = 0;
-  }
-  lastMS = currentMS;
-  return `${prefix}-${currentMS}${suffix ? "-" + suffix : ""}`;
 }

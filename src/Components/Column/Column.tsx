@@ -1,8 +1,9 @@
-import React, { forwardRef } from "react";
+import React, { forwardRef, useContext } from "react";
 import { ColumnProps } from "../../types";
 import Task from "../Task/Task";
 import styled from "styled-components";
 import { Droppable } from "@hello-pangea/dnd";
+import { AppContext, AppDispatchContext } from "../../Contexts/AppContext";
 
 const Container = styled.div`
   display: flex;
@@ -45,6 +46,8 @@ const NoTasks = styled.div`
 `;
 
 function Column(props: ColumnProps, ref: React.LegacyRef<HTMLDivElement>) {
+  const { tasks } = useContext(AppContext);
+
   return (
     <Container>
       <Title>{props.title}</Title>
@@ -54,9 +57,7 @@ function Column(props: ColumnProps, ref: React.LegacyRef<HTMLDivElement>) {
             <div>
               {props.taskIds.length ? (
                 props.taskIds.map((taskId, index) => {
-                  return (
-                    <Task key={taskId} {...props.tasks[taskId]} index={index} />
-                  );
+                  return <Task key={taskId} {...tasks[taskId]} index={index} />;
                 })
               ) : (
                 <NoTasks>... no tasks</NoTasks>

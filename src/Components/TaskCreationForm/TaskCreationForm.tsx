@@ -3,12 +3,10 @@ import { useForm } from "react-hook-form";
 import styled from "styled-components";
 import { Category, Assignee } from "../../constants";
 import FormInput from "../FormInput/FormInput";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import moment from "moment";
-
-interface CreateTaskProps {
-  onSubmit: (props: TaskToCreate) => void;
-}
+import { AppDispatchContext } from "../../Contexts/AppContext";
+import { actions } from "../../Actions/TaskActions";
 
 const Container = styled.div<{ $isExpended: boolean }>`
   position: absolute;
@@ -85,7 +83,7 @@ const CloseButton = styled.div`
   }
 `;
 
-function CreateTask(props: CreateTaskProps) {
+function TaskCreationForm() {
   const {
     register,
     handleSubmit,
@@ -102,7 +100,7 @@ function CreateTask(props: CreateTaskProps) {
       isUrgent: false,
     },
   });
-
+  const dispatch = useContext(AppDispatchContext);
   const [isExpended, setIsExpended] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -128,7 +126,7 @@ function CreateTask(props: CreateTaskProps) {
   const onSubmit = (data: TaskToCreate) => {
     reset();
     setIsExpended(false);
-    props.onSubmit(data);
+    dispatch(actions.addTask(data));
   };
 
   return (
@@ -224,4 +222,4 @@ function CreateTask(props: CreateTaskProps) {
   );
 }
 
-export default styled(CreateTask)``;
+export default styled(TaskCreationForm)``;

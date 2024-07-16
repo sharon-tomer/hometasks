@@ -1,24 +1,18 @@
 import { Moment } from "moment";
 import { Assignee, Category } from "./constants";
+import { Dispatch } from "react";
 
 export interface AppState {
-  columns: { [columnId: string]: ColumnProps };
+  columns: ColumnsList;
   tasks: TaskList;
 }
-
-export interface ColumnProps extends Column {
-  tasks: TaskList;
-}
-
-export interface Column {
+export interface ColumnProps {
   id: string;
   title: string;
   taskIds: string[];
 }
 
-export interface ColumnsList {
-  [columnId: string]: Column;
-}
+export type ColumnsList = Record<string, ColumnProps>;
 
 export interface Position {
   column: number;
@@ -26,13 +20,8 @@ export interface Position {
   size: number;
 }
 
-export interface ColumnPositions {
-  [category: string]: Position;
-}
-
-export interface TaskList {
-  [taskId: string]: TaskProps;
-}
+export type ColumnPositions = Record<string, Position>;
+export type TaskList = Record<string, TaskProps>;
 
 export interface TaskProps {
   id: string;
@@ -51,3 +40,55 @@ export interface ColumnTask extends TaskProps {
 export type TaskToCreate = Omit<TaskProps, "id">;
 
 export type TaskToUpdate = Partial<TaskProps> & { id: string };
+
+export type AllowedActions =
+  | "added"
+  | "changed"
+  | "deleted"
+  | "moved"
+  | "bulk_added";
+
+export interface CreateTaskAction {
+  type: "added";
+  taskToAdd: TaskToCreate;
+}
+
+export interface ChangeTaskAction {
+  type: "changed";
+  taskToUpdate: TaskToUpdate;
+}
+
+export interface DeleteTaskAction {
+  type: "deleted";
+  id: string;
+}
+
+export interface BulkAddTasksAction {
+  type: "bulk_added";
+  tasksToAdd: TaskList;
+}
+
+export interface MoveTaskAction {
+  type: "moved";
+  taskId: string;
+  fromCategory: Category;
+  toCategory: Category;
+  fromIndex: number;
+  toIndex: number;
+}
+
+export type KnownTaskAction =
+  | CreateTaskAction
+  | ChangeTaskAction
+  | DeleteTaskAction
+  | BulkAddTasksAction
+  | MoveTaskAction;
+
+export type UnknownAction = {
+  type: Exclude<string, AllowedActions>;
+  [key: string]: unknown;
+};
+
+export type TaskAction = KnownTaskAction | UnknownAction;
+
+export type DispatchType = Dispatch<TaskAction>;

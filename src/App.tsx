@@ -1,6 +1,6 @@
-import CreateTask from "./Components/CreateTask/CreateTask";
+import TaskCreationForm from "./Components/TaskCreationForm/TaskCreationForm";
 import { default as ColumnArea } from "./Components/ColumnsWrapper/ColumnsWrapper";
-import { TaskList, TaskToCreate, TaskToUpdate } from "./types";
+import { TaskList } from "./types";
 import { JSONBinFetchConfig } from "./configs";
 import useFetch from "./Hooks/useFetch";
 import {
@@ -10,8 +10,11 @@ import {
   Grid,
   Title,
 } from "./Styles/AppStyles";
-import { createTask, deleteTask, updateTask } from "./utils/TaskHandler";
-import useAPIData from "./Hooks/useAPIData";
+
+import { useContext, useEffect } from "react";
+import { AppProvider } from "./Providers/AppProvider";
+import { AppDispatchContext } from "./Contexts/AppContext";
+import { actions } from "./Actions/TaskActions";
 
 interface ApiResponse {
   record: {
@@ -21,38 +24,18 @@ interface ApiResponse {
 }
 
 function App() {
+  const dispatch = useContext(AppDispatchContext);
   const { isLoading, apiData } = useFetch<ApiResponse>(JSONBinFetchConfig.get);
-  const { columns, setColumns, tasks, setTasks } = useAPIData({ apiData });
+  //   const {
+  //     state,
+  //     dispatch,
+  //     actions: { handleBulkAddTasks },
+  //   } = useTaskActions();
 
-  function handleNewTask(newTask: TaskToCreate) {
-    const { modifiedTasks, modifiedColumns } = createTask(
-      newTask,
-      tasks,
-      columns
-    );
-    setTasks(modifiedTasks);
-    setColumns(modifiedColumns);
-  }
-
-  function handleUpdateTask(modifiedFields: TaskToUpdate) {
-    if (!modifiedFields.id || !tasks[modifiedFields.id]) {
-      return;
-    }
-    const modifiedTask = updateTask(modifiedFields, tasks);
-
-    setTasks({
-      ...tasks,
-      modifiedTask,
-    });
-  }
-
-  function handleDeleteTask(taskId: string) {
-    if (!taskId || !tasks[taskId]) {
-      return;
-    }
-    let modifiedTasks = deleteTask(taskId, tasks);
-    setTasks(modifiedTasks);
-  }
+  useEffect(() => {
+    apiData?.record?.tasks &&
+      dispatch(actions.bulkAddTasks(apiData.record.tasks));
+  }, [apiData]);
 
   return (
     <div>
@@ -60,16 +43,10 @@ function App() {
       <Grid>
         <Title>Productivity?</Title>
         <CreateTaskWrapper>
-          <CreateTask onSubmit={handleNewTask}></CreateTask>
+          <TaskCreationForm />
         </CreateTaskWrapper>
         <ColumnsWrapper>
-          <ColumnArea
-            columns={columns}
-            tasks={tasks}
-            setColumns={setColumns}
-            updateTask={handleUpdateTask}
-            deleteTask={handleDeleteTask}
-          />
+          <ColumnArea />
         </ColumnsWrapper>
       </Grid>
     </div>

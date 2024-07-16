@@ -68,3 +68,7 @@ export const emptyColumns: ColumnsList = {
 };
 
 export const emptyTasks: TaskList = {};
+export const emptyAppState = {
+  columns: emptyColumns,
+  tasks: emptyTasks,
+};

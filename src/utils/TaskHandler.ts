@@ -5,7 +5,7 @@ import {
   ColumnsList,
   TaskProps,
 } from "../types";
-import { generateUniqueId } from "./mock";
+import { generateUniqueId } from "./helpers";
 
 function updateTask(modifiedFields: TaskToUpdate, tasks: TaskList): TaskProps {
   const currentTask = tasks[modifiedFields.id];
