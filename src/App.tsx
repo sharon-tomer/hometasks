@@ -1,8 +1,5 @@
 import TaskCreationForm from "./Components/TaskCreationForm/TaskCreationForm";
 import { default as ColumnArea } from "./Components/ColumnsWrapper/ColumnsWrapper";
-import { TaskList } from "./types";
-import { JSONBinFetchConfig } from "./configs";
-import useFetch from "./Hooks/useFetch";
 import {
   Background,
   ColumnsWrapper,
@@ -10,28 +7,12 @@ import {
   Grid,
   Title,
 } from "./Styles/AppStyles";
-
-import { useContext, useEffect } from "react";
-import { AppDispatchContext } from "./Contexts/AppContext";
-import { actions } from "./Actions/TaskActions";
-
-interface ApiResponse {
-  record: {
-    tasks: TaskList;
-  };
-  metadata: any;
-}
+import { useLocalStorage } from "./Hooks/useLocalStorage";
+import { useRemoteDB } from "./Hooks/useRemoteDB";
 
 function App() {
-  const dispatch = useContext(AppDispatchContext);
-  const { /*isLoading,*/ apiData } = useFetch<ApiResponse>(
-    JSONBinFetchConfig.get
-  );
-
-  useEffect(() => {
-    apiData?.record?.tasks &&
-      dispatch(actions.bulkAddTasks(apiData.record.tasks));
-  }, [apiData]);
+  useLocalStorage();
+  useRemoteDB();
 
   return (
     <div>

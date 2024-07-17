@@ -18,6 +18,7 @@ export const Card = styled.div<{
   border-radius: 5px;
   &:hover {
     filter: ${(props) => (props.$isCompact ? "brightness(0.9)" : "none")};
+    cursor: pointer;
   }
 `;
 
@@ -68,4 +69,6 @@ export const CompleteBy = styled.div`
 export const BinWrapper = styled.div`
   width: 18px;
   height: 18px;
+  &:hover {
+  }
 `;

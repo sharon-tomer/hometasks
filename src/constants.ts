@@ -66,4 +66,7 @@ export const emptyTasks: TaskList = {};
 export const emptyAppState = {
   columns: emptyColumns,
   tasks: emptyTasks,
+  localVersion: 0,
 };
+
+export const SERVER_UPDATE_INTERVAL = 60000;

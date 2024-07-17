@@ -22,10 +22,11 @@ function deleteTask(taskId: string) {
   };
 }
 
-function bulkAddTasks(tasksToAdd: TaskList) {
+function bulkAddTasks(tasksToAdd: TaskList, version: number) {
   return {
     type: "bulk_added",
     tasksToAdd,
+    version,
   };
 }
 

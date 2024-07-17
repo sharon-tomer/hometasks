@@ -6,7 +6,17 @@ import { UseFormRegister } from "react-hook-form";
 export interface AppState {
   columns: ColumnsList;
   tasks: TaskList;
+  localVersion: number;
 }
+
+export interface ApiResponse {
+  record: {
+    tasks: TaskList;
+    version: number;
+  };
+  metadata: any;
+}
+
 export interface ColumnProps {
   id: string;
   title: string;
@@ -67,6 +77,7 @@ export interface DeleteTaskAction {
 export interface BulkAddTasksAction {
   type: "bulk_added";
   tasksToAdd: TaskList;
+  version: number;
 }
 
 export interface MoveTaskAction {

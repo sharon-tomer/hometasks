@@ -10,6 +10,8 @@ import { generateUniqueId } from "../utils/helpers";
 
 export default function appReducer(state: AppState, action: TaskAction) {
   if (isKnownAction(action)) {
+    console.log("action", action);
+    const localVersion = state.localVersion + 1;
     switch (action.type) {
       case "added": {
         const id = generateUniqueId("task");
@@ -33,6 +35,7 @@ export default function appReducer(state: AppState, action: TaskAction) {
               taskIds: [...state.columns[category].taskIds, id],
             },
           },
+          localVersion,
         };
       }
       case "changed": {
@@ -45,6 +48,7 @@ export default function appReducer(state: AppState, action: TaskAction) {
             },
           },
           columns: state.columns,
+          localVersion,
         };
       }
       case "deleted": {
@@ -63,6 +67,7 @@ export default function appReducer(state: AppState, action: TaskAction) {
         return {
           tasks: modifiedTasks,
           columns: modifiedColumns,
+          localVersion,
         };
       }
       case "moved": {
@@ -85,6 +90,7 @@ export default function appReducer(state: AppState, action: TaskAction) {
         return {
           tasks: modifiedTasks,
           columns: modifiedColumns,
+          localVersion,
         };
       }
       case "bulk_added": {
@@ -96,6 +102,7 @@ export default function appReducer(state: AppState, action: TaskAction) {
         return {
           tasks: modifiedTasks,
           columns: modifiedColumns,
+          localVersion: action.version,
         };
       }
     }

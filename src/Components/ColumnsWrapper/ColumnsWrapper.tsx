@@ -37,7 +37,7 @@ function ColumnsWrapper() {
         </ColumnWrapper>
         <ColumnWrapper $column={2} $row={1} $size={1}>
           <Column {...columns[Category.moreThan15Minutes]} />
-        </ColumnWrapper>{" "}
+        </ColumnWrapper>
         <ColumnWrapper $column={3} $row={1} $size={1}>
           <Column {...columns[Category.done]} />
         </ColumnWrapper>
