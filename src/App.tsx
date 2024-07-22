@@ -18,7 +18,7 @@ function App() {
     <div>
       <Background />
       <Grid>
-        <Title>Productivity?</Title>
+        <Title>House Chores</Title>
         <CreateTaskWrapper>
           <TaskCreationForm />
         </CreateTaskWrapper>

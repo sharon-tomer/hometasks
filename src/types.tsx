@@ -107,13 +107,14 @@ export type DispatchType = Dispatch<TaskAction>;
 
 export interface CommonInputProps {
   field: ValidCreationFormField;
-  register: UseFormRegister<TaskToCreate>;
+  register: UseFormRegister<TaskToCreate | TaskToUpdate>;
   lineNumber: number;
   placeholder?: string;
   displayName: string;
   errorMessage?: string;
   inputType: "input" | "select" | "textarea" | "checkbox" | "date";
   children?: React.ReactNode;
+  noLabel?: boolean;
 }
 
 export interface InputProps

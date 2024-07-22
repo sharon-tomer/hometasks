@@ -1,8 +1,8 @@
 import styled from "styled-components";
 
 export const Card = styled.div<{
-  $isCompact: boolean;
-  $backgroundColor: string;
+  $isCompact?: boolean;
+  $backgroundColor?: string;
 }>`
   display: flex;
   flex-flow: column nowrap;
@@ -10,7 +10,7 @@ export const Card = styled.div<{
   /* height: ${(props) => (props.$isCompact ? "40px" : "auto")};
   min-height: 60px; */
   border: 1px solid #cccccc;
-  background-color: ${(props) => props.$backgroundColor};
+  background-color: ${(props) => props.$backgroundColor || "white"};
   padding: 12px;
   margin: 6px;
   text-align: left;
@@ -31,14 +31,14 @@ export const Header = styled.div`
   padding: 0 12px;
 `;
 
-export const Content = styled.div<{ $isCompact: boolean }>`
+export const Content = styled.div<{ $isCompact?: boolean }>`
   display: ${(props) => (props.$isCompact ? "none" : "flex")};
   flex-flow: column nowrap;
   padding: 0 12px;
   margin: 6px 0;
 `;
 
-export const Footer = styled.div<{ $isCompact: boolean }>`
+export const Footer = styled.div<{ $isCompact?: boolean }>`
   display: ${(props) => (props.$isCompact ? "none" : "flex")};
   flex-flow: row nowrap;
   justify-content: space-between;

@@ -11,6 +11,7 @@ const FormInput: React.FC<FormInputProps> = (props) => {
     errorMessage,
     lineNumber,
     children,
+    noLabel,
     ...otherProps
   } = props;
 
@@ -18,13 +19,15 @@ const FormInput: React.FC<FormInputProps> = (props) => {
 
   return (
     <>
-      <Label
-        $lineNumber={props.lineNumber}
-        $hasError={hasError}
-        htmlFor={props.field}
-      >
-        {props.displayName}
-      </Label>
+      {!noLabel && (
+        <Label
+          $lineNumber={props.lineNumber}
+          $hasError={hasError}
+          htmlFor={props.field}
+        >
+          {props.displayName}
+        </Label>
+      )}
       {props.inputType === "input" && (
         <Input
           placeholder={props.placeholder || ""}

@@ -1,3 +1,5 @@
+// Dear someone with access to this file, yeah, I know I should'nt put secrets in the client. And yes, you do now have access to my JSONBIN API key.
+
 export const JSONBinFetchConfig = {
   get: {
     url: "https://api.jsonbin.io/v3/b/66735126acd3cb34a85a05e4/latest",

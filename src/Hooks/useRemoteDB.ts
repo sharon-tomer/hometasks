@@ -16,7 +16,7 @@ export function useRemoteDB() {
   function updateServerIfNeeded() {
     if (!initialLoadRef.current && localVersion > versionRef.current) {
       console.log("updating server to version ", localVersion);
-
+      versionRef.current = localVersion;
       const requestBody = JSON.stringify({
         tasks,
         version: localVersion,
