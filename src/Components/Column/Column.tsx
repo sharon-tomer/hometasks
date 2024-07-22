@@ -6,7 +6,7 @@ import { Droppable } from "@hello-pangea/dnd";
 import { AppContext } from "../../Contexts/AppContext";
 import { Container, Title, Card, NoTasks } from "./style";
 
-function Column(props: ColumnProps, ref: React.LegacyRef<HTMLDivElement>) {
+const Column = (props: ColumnProps, ref: React.LegacyRef<HTMLDivElement>) => {
   const { tasks } = useContext(AppContext);
 
   return (
@@ -30,6 +30,6 @@ function Column(props: ColumnProps, ref: React.LegacyRef<HTMLDivElement>) {
       </Droppable>
     </Container>
   );
-}
+};
 
 export default styled(forwardRef(Column))``;

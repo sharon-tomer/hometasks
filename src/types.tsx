@@ -107,7 +107,7 @@ export type DispatchType = Dispatch<TaskAction>;
 
 export interface CommonInputProps {
   field: ValidCreationFormField;
-  register: UseFormRegister<TaskToCreate | TaskToUpdate>;
+  register: UseFormRegister<TaskToCreate>;
   lineNumber: number;
   placeholder?: string;
   displayName: string;

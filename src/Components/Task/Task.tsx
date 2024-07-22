@@ -1,4 +1,4 @@
-import { forwardRef, useContext, useState } from "react";
+import { useContext, useState } from "react";
 import { ColumnTask } from "../../types";
 import styled from "styled-components";
 import { Draggable } from "@hello-pangea/dnd";
@@ -20,16 +20,17 @@ import {
 import { AppDispatchContext } from "../../Contexts/AppContext";
 import { actions } from "../../Actions/TaskActions";
 
-function Task(task: ColumnTask, ref: React.LegacyRef<HTMLDivElement>) {
+const Task = (task: ColumnTask) => {
   const dispatch = useContext(AppDispatchContext);
   const [isCompact, setIsCompact] = useState(true);
 
-  function toggleIsCompact() {
-    setIsCompact(!isCompact);
-  }
-  function handleDelete() {
+  const toggleIsCompact = () => setIsCompact(!isCompact);
+
+  const handleDelete = (e: React.MouseEvent) => {
+    e.stopPropagation();
     dispatch(actions.deleteTask(task.id));
-  }
+  };
+
   return (
     <Draggable draggableId={`${task.id}`} index={task.index}>
       {(provided) => (
@@ -66,6 +67,6 @@ function Task(task: ColumnTask, ref: React.LegacyRef<HTMLDivElement>) {
       )}
     </Draggable>
   );
-}
+};
 
-export default styled(forwardRef(Task))``;
+export default styled(Task)``;

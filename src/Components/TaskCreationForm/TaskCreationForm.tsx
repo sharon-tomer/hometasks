@@ -16,7 +16,7 @@ import {
   Form,
 } from "./styles";
 
-function TaskCreationForm() {
+const TaskCreationForm = () => {
   const {
     register,
     handleSubmit,
@@ -153,6 +153,6 @@ function TaskCreationForm() {
       )}
     </Container>
   );
-}
+};
 
 export default styled(TaskCreationForm)``;

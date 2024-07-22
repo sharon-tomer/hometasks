@@ -6,7 +6,7 @@ import { Container, ColumnWrapper } from "../../Styles/ColumnWrapperStyles";
 import { AppContext, AppDispatchContext } from "../../Contexts/AppContext";
 import { actions } from "../../Actions/TaskActions";
 
-function ColumnsWrapper() {
+const ColumnsWrapper = () => {
   const { columns } = useContext(AppContext);
   const dispatch = useContext(AppDispatchContext);
 
@@ -44,6 +44,6 @@ function ColumnsWrapper() {
       </DragDropContext>
     </Container>
   );
-}
+};
 
 export default ColumnsWrapper;
